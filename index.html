@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>3D Realistic Bee | Animated Landing</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/devil-breeze" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/poppins" rel="stylesheet">
+  <style>
+    /* ----- Global Reset & Theme ----- */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #1b1b1b;
+      color: #eef8ce;
+      font-size: 14px;
+      background-image: url('https://i.ibb.co.com/jvY0Xv64/bg.png'),
+        repeating-linear-gradient(
+          to right,
+          transparent 0 500px,
+          #73814b33 500px 501px
+        );
+      background-size: cover;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    *::-webkit-scrollbar {
+      width: 0;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      box-sizing: border-box;
+    }
+
+    .section {
+      width: 100%;
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 0;
+    }
+
+    .content-fit {
+      width: min(1200px, 90vw);
+      margin: auto;
+      min-height: 100vh;
+      position: relative;
+      padding-block: 10em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ----- Fixed Header ----- */
+    header {
+      padding-block: 1em;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      background-color: rgba(27, 27, 27, 0.1);
+      background-image: repeating-linear-gradient(
+        to right,
+        transparent 0 500px,
+        #eee1 500px 501px
+      );
+    }
+
+    header .content-fit {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: unset !important;
+      padding-block: unset !important;
+    }
+
+    header .content-fit nav ul {
+      display: flex;
+      gap: 2em;
+    }
+
+    .logo {
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #d1ff48;
+    }
+
+    /* ----- Banner Section ----- */
+    #banner .title {
+      color: #d1ff48;
+      font-size: 11em;
+      font-family: "devil breeze", sans-serif;
+      font-weight: bold;
+      position: relative;
+      text-align: center;
+      line-height: 1;
+      overflow: visible;
+      word-break: break-word;
+    }
+
+    #banner .title::before {
+      content: attr(data-before);
+      position: absolute;
+      z-index: -1;
+      color: oklch(0.78 0.17 80.01 / 0.19);
+      -webkit-mask: linear-gradient(
+        to bottom,
+        #000 -80%,
+        oklch(0 0 0/0),
+        #000,
+        oklch(0 0 0/0) 200%
+      );
+      mask: linear-gradient(
+        to bottom,
+        #000 -80%,
+        oklch(0 0 0/0),
+        #000,
+        oklch(0 0 0/0) 200%
+      );
+      transform: scaleY(-1) translateY(-0.44lh);
+      left: 0;
+      right: 0;
+    }
+
+    /* Fixed decorative images */
+    .section .decorate {
+      position: fixed;
+      z-index: -100;
+      pointer-events: none;
+    }
+
+    /* ----- Intro & Description Layout ----- */
+    #intro .content-fit {
+      flex-direction: row;
+      gap: 30%;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section .number {
+      font-family: "devil breeze", sans-serif;
+      font-size: 15em;
+      font-weight: bold;
+      line-height: 0.8;
+      color: #d1ff48;
+      opacity: 0.9;
+    }
+
+    .section .content-fit .title {
+      font-family: "devil breeze", sans-serif;
+      font-size: 5em;
+      font-weight: bold;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    #description .content-fit {
+      padding-right: 30%;
+    }
+
+    #description .number {
+      font-size: 5em;
+    }
+
+    #description .title {
+      font-size: 7em;
+      font-weight: 500;
+    }
+
+    /* ----- Contact Section ----- */
+    #contact .content-fit {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    #contact table {
+      width: min(800px, 90vw);
+      padding-top: 2em;
+      font-size: 2em;
+      margin: auto;
+      border-collapse: collapse;
+    }
+
+    #contact table td {
+      padding-block: 0.5em;
+      border-bottom: 1px dashed #445022;
+    }
+
+    #contact table td:nth-child(1) {
+      text-align: left;
+      font-weight: 500;
+    }
+
+    #contact table td:nth-child(2) {
+      text-align: right;
+      font-weight: 200;
+    }
+
+    #contact .sign {
+      font-family: "devil breeze", sans-serif;
+      font-size: 10em;
+      margin-top: 0.2em;
+      color: #d1ff48;
+    }
+
+    /* 3D container fixed over screen */
+    #container3D {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    /* ----- Responsive Adjustments ----- */
+    @media screen and (max-width: 1023px) {
+      #banner .title {
+        font-size: 5em;
+      }
+      #intro .content-fit {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      .section .number {
+        font-size: 8em;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      #banner .title {
+        font-size: 3em;
+      }
+      #intro .content-fit {
+        flex-direction: column;
+      }
+      .section .number {
+        font-size: 5em;
+      }
+      .section .content-fit .title {
+        font-size: 2.5em;
+      }
+      #description .content-fit {
+        padding-right: 0;
+      }
+      #description .title {
+        font-size: 3.5em;
+      }
+      #contact table {
+        font-size: 1.2em;
+      }
+      #contact .sign {
+        font-size: 4em;
+      }
+      #container3D {
+        position: sticky;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="content-fit">
+      <div class="logo">arian00001</div>
+      <nav>
+        <ul>
+          <li>Contacts</li>
+          <li>Category</li>
+          <li>Login</li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Banner Section -->
+  <div class="section" id="banner">
+    <div class="content-fit">
+      <div class="title" data-before="3D ANIMATION">3D ANIMATION</div>
+    </div>
+    <!-- Decorative images using provided links -->
+    <img src="https://i.ibb.co.com/LdhZsnPf/flower.png" class="decorate" alt="flower" style="width: 50vw; bottom: 0; right: 0;">
+    <img src="https://i.ibb.co.com/zTcsfSC0/leaf.png" class="decorate" alt="leaf" style="width: 30vw; bottom: 0; left: 0;">
+  </div>
+
+  <!-- Intro Section -->
+  <div class="section" id="intro">
+    <div class="content-fit">
+      <div class="number">01</div>
+      <div class="des">
+        <div class="title">3D Animation Design for Website</div>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus voluptas a porro libero
+        recusandae quae, aut ratione, incidunt laborum, necessitatibus similique enim doloremque ex.
+        Laudantium obcaecati aspernatur doloremque illo beatae, maxime hic itaque consequatur nisi
+        accusantium veritatis, voluptatem ratione! Placeat numquam nisi reiciendis harum quibusdam tempore
+        eaque deleniti accusantium, veniam quae eos sed, asperiores laborum corporis odit mollitia.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Description Section -->
+  <div class="section" id="description">
+    <div class="content-fit">
+      <div class="number">02</div>
+      <div class="des">
+        <div class="title">Honeybee</div>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus voluptas a porro libero
+        recusandae quae, aut ratione, incidunt laborum, necessitatibus similique enim doloremque ex.
+        Laudantium obcaecati aspernatur doloremque illo beatae, maxime hic itaque consequatur nisi
+        accusantium veritatis, voluptatem ratione! Placeat numquam nisi reiciendis harum quibusdam tempore
+        eaque deleniti accusantium, veniam quae eos sed, asperiores laborum corporis odit mollitia.</p>
+      </div>
+    </div>
+    <img src="https://i.ibb.co.com/ZRRpgRHn/leaf1.png" class="decorate" alt="leaf1" style="width: 70vw; bottom: 0; right: 0;">
+  </div>
+
+  <!-- Contact Section -->
+  <div class="section" id="contact">
+    <div class="content-fit">
+      <div class="number">03</div>
+      <div class="des">
+        <div class="title">CONTACT</div>
+        <table>
+          <tr>
+            <td>Email</td>
+            <td>contact@beeworks3d.com</td>
+          </tr>
+          <tr>
+            <td>Phone</td>
+            <td>+1 123 456 789</td>
+          </tr>
+          <tr>
+            <td>Website</td>
+            <td>beeworks3d.com</td>
+          </tr>
+          <tr>
+            <td>Youtube</td>
+            <td>@beeworks</td>
+          </tr>
+        </table>
+        <div class="sign">BeeWorks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D Container (bee rendered here) -->
+  <div id="container3D"></div>
+
+  <!-- Three.js and GSAP from CDN -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.skypack.dev/three@0.129.0/build/three.module.js",
+        "three/addons/": "https://cdn.skypack.dev/three@0.129.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { gsap } from 'https://cdn.skypack.dev/gsap';
+
+    // --- Initialize scene, camera, renderer ---
+    const camera = new THREE.PerspectiveCamera(10, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 13;
+
+    const scene = new THREE.Scene();
+    
+    // Add subtle background color to scene (optional, but helps blend)
+    scene.background = null; // transparent
+
+    let bee;
+    let mixer;
+
+    const loader = new GLTFLoader();
+    
+    // Load the bee model
+    loader.load(
+      "https://raw.githubusercontent.com/DennysDionigi/bee-glb/94253437c023643dd868592e11a0fd2c228cfe07/demon_bee_full_texture.glb",
+      function (gltf) {
+        bee = gltf.scene;
+        scene.add(bee);
+        
+        // Adjust bee initial scale or position if needed
+        bee.scale.set(1, 1, 1);
+        
+        // Setup animation mixer
+        mixer = new THREE.AnimationMixer(bee);
+        if (gltf.animations && gltf.animations.length > 0) {
+          mixer.clipAction(gltf.animations[0]).play();
+        }
+        
+        // Start position tracking after model loads
+        modelMove();
+      },
+      function (xhr) {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      function (error) {
+        console.error("Error loading model:", error);
+      }
+    );
+
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true,
+      antialias: true 
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // cap for performance
+    document.getElementById("container3D").appendChild(renderer.domElement);
+
+    // --- Lighting ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    scene.add(ambientLight);
+
+    const topLight = new THREE.DirectionalLight(0xffffff, 1);
+    topLight.position.set(500, 500, 500);
+    scene.add(topLight);
+    
+    // Additional fill light for bee details
+    const fillLight = new THREE.DirectionalLight(0xffccaa, 0.8);
+    fillLight.position.set(-300, 200, 400);
+    scene.add(fillLight);
+
+    // --- Animation Loop ---
+    const clock = new THREE.Clock();
+    
+    const reRender3D = () => {
+      requestAnimationFrame(reRender3D);
+      
+      const delta = clock.getDelta();
+      // Update mixer with delta for consistent animation speed
+      if (mixer) mixer.update(delta * 0.8); // slight slowdown for smoothness
+      
+      renderer.render(scene, camera);
+    };
+    reRender3D();
+
+    // --- Position definitions for each section ---
+    let arrPositionModel = [
+      { id: "banner", position: { x: 0, y: -1, z: 0 }, rotation: { x: 0, y: 1.5, z: 0 } },
+      { id: "intro", position: { x: 1, y: -1, z: -5 }, rotation: { x: 0.5, y: -0.5, z: 0.5 } },
+      { id: "description", position: { x: -1, y: -1, z: -5 }, rotation: { x: 0, y: 0.5, z: 0.2 } },
+      { id: "contact", position: { x: 0.45, y: -2, z: -10 }, rotation: { x: 0.2, y: -0.5, z: -0.2 } }
+    ];
+
+    // --- Detect which section is currently in view ---
+    const modelMove = () => {
+      if (!bee) return;
+      
+      const sections = document.querySelectorAll(".section");
+      let currentSection = null;
+      
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        // Consider section active when its top is within the upper third of viewport
+        if (rect.top <= window.innerHeight / 3 && rect.bottom >= window.innerHeight / 3) {
+          currentSection = section.id;
+        }
+      });
+      
+      // Fallback: if none match exactly, use last section that has passed
+      if (!currentSection) {
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top < window.innerHeight / 2) {
+            currentSection = section.id;
+          }
+        });
+      }
+      
+      if (!currentSection) return;
+      
+      const positionIndex = arrPositionModel.findIndex(val => val.id === currentSection);
+      if (positionIndex >= 0) {
+        const new_coordinates = arrPositionModel[positionIndex];
+        
+        // Animate position and rotation with GSAP
+        gsap.to(bee.position, {
+          x: new_coordinates.position.x,
+          y: new_coordinates.position.y,
+          z: new_coordinates.position.z,
+          duration: 2.5,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+        
+        gsap.to(bee.rotation, {
+          x: new_coordinates.rotation.x,
+          y: new_coordinates.rotation.y,
+          z: new_coordinates.rotation.z,
+          duration: 2.5,
+          ease: "power2.out",
+          overwrite: "auto"
+        });
+      }
+    };
+
+    // --- Event Listeners ---
+    window.addEventListener("scroll", () => {
+      if (bee) modelMove();
+    });
+
+    window.addEventListener("resize", () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    // Initial call in case model loads after scroll position is already set
+    window.addEventListener("load", () => {
+      if (bee) modelMove();
+    });
+    
+    // Also trigger after a short delay to ensure layout is stable
+    setTimeout(() => {
+      if (bee) modelMove();
+    }, 200);
+  </script>
+</body>
+  </html>
